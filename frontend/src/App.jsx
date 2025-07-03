@@ -13,6 +13,7 @@ import TreatmentList from './components/TreatmentList.jsx';
 
 function App() {
   // 1) server data
+  const [loading, setLoading] = useState(false);
   const [treatments, setTreatments] = useState([]);
   // 2) form “draft” state persists across navigation
   const [draft, setDraft] = useState({
@@ -29,17 +30,21 @@ function App() {
   // fetch all treatments from backend
   const fetchTreatments = async () => {
     try {
+      setLoading(true);
       const { data } = await axios.get('http://localhost:5000/api/treatments');
       setTreatments(data);
     } catch (err) {
       console.error('Error fetching treatments:', err);
       toast.error('Error fetching treatments');
+    } finally {
+      setLoading(false);
     }
   };
 
   // add a new treatment, then clear the draft
   const handleAdd = async (treatment) => {
     try {
+      setLoading(true);
       await axios.post('http://localhost:5000/api/treatments', treatment);
       fetchTreatments();
       toast.success('Treatment added!');
@@ -49,7 +54,9 @@ function App() {
       console.error('Error adding treatment:', err);
       const msg = err.response?.data?.error || 'Failed to add treatment';
       toast.error(msg);
-    }
+    } finally {
+    setLoading(false);
+  }
   };
 
   // delete and refetch
@@ -86,17 +93,22 @@ function App() {
               form={draft}
               setForm={setDraft}
               onAdd={handleAdd}
+              loading={loading}
             />
           }
         />
         <Route
           path="/list"
           element={
-            <TreatmentList
-              treatments={treatments}
-              onDelete={handleDelete}
-            />
-          }
+              loading ? (
+                <div style={{ textAlign: 'center', paddingTop: '5rem' }}>Loading...</div>
+              ) : (
+                <TreatmentList
+                  treatments={treatments}
+                  onDelete={handleDelete}
+                />
+              )
+            }
         />
         <Route path="*" element={<Navigate to="/add" replace />} />
       </Routes>

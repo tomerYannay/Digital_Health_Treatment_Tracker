@@ -45,7 +45,7 @@ const GradientButton = styled(Button)({
   }
 });
 
-export default function TreatmentForm({ form, setForm, onAdd }) {
+export default function TreatmentForm({ form, setForm, onAdd, loading }) {
   const [idError, setIdError] = useState('');
 
   const handleChange = e => {
@@ -160,7 +160,9 @@ export default function TreatmentForm({ form, setForm, onAdd }) {
           />
 
           <Box textAlign="center">
-            <GradientButton type="submit">Add Treatment</GradientButton>
+            <GradientButton type="submit" disabled={loading}>
+              {loading ? 'Submitting...' : 'Add Treatment'}
+            </GradientButton>
           </Box>
         </Box>
       </StyledPaper>
