@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Table, TableBody, TableCell,
   TableHead, TableRow, Button,
-  Paper, TableContainer, Box, Typography
+  Paper, TableContainer, Box
 } from '@mui/material';
 import { styled } from '@mui/system';
 
@@ -30,6 +30,7 @@ const TreatmentList = ({ treatments, onDelete }) => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell><strong>ID</strong></TableCell>
               <TableCell><strong>Patient Name</strong></TableCell>
               <TableCell><strong>Treatment Type</strong></TableCell>
               <TableCell><strong>Date</strong></TableCell>
@@ -40,6 +41,7 @@ const TreatmentList = ({ treatments, onDelete }) => {
           <TableBody>
             {treatments.map(t => (
               <TableRow key={t.id}>
+                <TableCell>{t.identifier}</TableCell>
                 <TableCell>{t.patientName}</TableCell>
                 <TableCell>{t.type}</TableCell>
                 <TableCell>{t.date}</TableCell>

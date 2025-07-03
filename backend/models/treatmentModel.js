@@ -41,6 +41,34 @@ class Treatment {
       });
     });
   }
+
+  static findByIdentifierAndName(identifier, patientName) {
+    return new Promise((resolve, reject) => {
+      db.get(
+        'SELECT * FROM treatments WHERE identifier = ? AND patientName = ?',
+        [identifier, patientName],
+        (err, row) => {
+          if (err) return reject(err);
+          resolve(row);
+        }
+      );
+    });
+  }
+  static findByIdentifierNameAndType(identifier, patientName, type) {
+    return new Promise((resolve, reject) => {
+      db.get(
+        'SELECT * FROM treatments WHERE identifier = ? AND patientName = ? AND type = ?',
+        [identifier, patientName, type],
+        (err, row) => {
+          if (err) return reject(err);
+          resolve(row);
+        }
+      );
+    });
+  }
+
 }
+
+
 
 module.exports = Treatment;

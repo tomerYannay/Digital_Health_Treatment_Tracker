@@ -110,6 +110,7 @@ export default function TreatmentForm({ form, setForm, onAdd }) {
             fullWidth
             error={!!idError}
             helperText={idError}
+            inputProps={{ maxLength: 9 }}
             sx={{ mb: 2 }}
           />
 

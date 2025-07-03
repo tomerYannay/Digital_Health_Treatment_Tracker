@@ -29,16 +29,27 @@ exports.create = async (req, res) => {
     return res.status(400).json({ error: 'Patient Name may only contain letters and spaces.' });
   }
 
+  const existingWithSameId = await Treatment.findByIdentifier(identifier);
+
+  // תנאי 1: אותו ת"ז עם שם אחר — חסום
+  if (existingWithSameId && existingWithSameId.patientName !== patientName) {
+    return res.status(400).json({
+      error: `ID "${identifier}" is already associated with another name ("${existingWithSameId.patientName}").`
+    });
+  }
+
+  // תנאי 2: אותו ת"ז + שם + טיפול — חסום
+  const duplicateTreatment = await Treatment.findByIdentifierNameAndType(identifier, patientName, type);
+  if (duplicateTreatment) {
+    return res.status(400).json({
+      error: `Treatment "${type}" already exists for patient "${patientName}" (ID: ${identifier}).`
+    });
+  }
+
   // Treatment type validation (optional)
   const validTypes = ['Physiotherapy', 'Ultrasound', 'Stimulation'];
   if (!validTypes.includes(type)) {
     return res.status(400).json({ error: 'Invalid treatment type provided.' });
-  }
-
-  // Efficient duplicate identifier check
-  const existing = await Treatment.findByIdentifier(identifier);
-  if (existing) {
-    return res.status(400).json({ error: `Identifier "${identifier}" already in use.` });
   }
 
   try {
